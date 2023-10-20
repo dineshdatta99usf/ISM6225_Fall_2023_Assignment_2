@@ -7,6 +7,9 @@ WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
 */
 
 using System.Text;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace ISM6225_Fall_2023_Assignment_2
 {
@@ -111,40 +114,45 @@ namespace ISM6225_Fall_2023_Assignment_2
         public static IList<IList<int>> FindMissingRanges(int[] nums, int lower, int upper)
         {
            try
+{
+    List<IList<int>> result = new List<IList<int>>();
+    long next = lower;
+
+    foreach (int num in nums)
+    {
+        if (num > next)
         {
-            IList<IList<int>> result = new List<IList<int>>();
-
-            long start = lower; // Use long to avoid integer overflow
-            long end = lower;   // Initialize both start and end to lower
-
-            for (int i = 0; i < nums.Length; i++)
+            if (num - next == 1)
             {
-                if (nums[i] == end)
-                {
-                    // If the current number is equal to 'end', increment 'end'
-                    end++;
-                }
-                else if (nums[i] > end)
-                {
-                    // If the current number is greater than 'end', there is a missing range
-                    result.Add(new List<int> { (int)start, (int)(end - 1) });
-                    start = nums[i] + 1;
-                    end = start; // Update both start and end
-                }
+                result.Add(new List<int> { (int)next });
             }
-
-            // Add the missing range for numbers after the last element in 'nums'
-            if (end <= upper)
+            else
             {
-                result.Add(new List<int> { (int)start, (int)upper });
+                result.Add(new List<int> { (int)next, (int)(num - 1) });
             }
-
-            return result;
         }
-        catch (Exception)
+
+        next = (long)num + 1;
+    }
+
+    if (next <= upper)
+    {
+        if (upper - next == 0)
         {
-            throw;
+            result.Add(new List<int> { (int)next });
         }
+        else
+        {
+            result.Add(new List<int> { (int)next, (int)upper });
+        }
+    }
+
+    return result;
+}
+catch (Exception)
+{
+    throw;
+}
 
         }
 
@@ -181,14 +189,41 @@ namespace ISM6225_Fall_2023_Assignment_2
         public static bool IsValid(string s)
         {
             try
-            {
-                // Write your code here and you can modify the return value according to the requirements
-                return s.Length == 0;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+{
+    Stack<Char> st = new Stack<Char>();
+    var CharArray = s.ToCharArray();
+
+    for (int i = 0; i < CharArray.Length; i++)
+    {
+        if (CharArray[i] == '(' || CharArray[i] == '[' || CharArray[i] == '{')
+        {
+            st.Push(CharArray[i]);
+            continue;
+        }
+        else if (st.Count == 0)
+        {
+            return false;
+        }
+        Char top = st.Pop();
+        if (top == '(' && CharArray[i] != ')')
+        {
+            return false;
+        }
+        else if (top == '[' && CharArray[i] != ']')
+        {
+            return false;
+        }
+        else if (top == '{' && CharArray[i] != '}')
+        {
+            return false;
+        }
+    }
+    return st.Count == 0;
+}
+catch (Exception)
+{
+    throw;
+}
         }
 
         /*
@@ -216,14 +251,27 @@ namespace ISM6225_Fall_2023_Assignment_2
         public static int MaxProfit(int[] prices)
         {
             try
-            {
-                // Write your code here and you can modify the return value according to the requirements
-                return 1;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+{
+    int max = 0;
+    int min = prices[0];
+
+    for (int i = 1; i < prices.Length; i++)
+    {
+        if (prices[i] < min)
+        {
+            min = prices[i];
+        }
+        else if ((prices[i] - min) > max)
+        {
+            max = prices[i] - min;
+        }
+    }
+    return max;
+}
+catch (Exception)
+{
+    throw;
+}
         }
 
         /*
@@ -296,14 +344,29 @@ namespace ISM6225_Fall_2023_Assignment_2
         public static int NumIdenticalPairs(int[] nums)
         {
             try
-            {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+{
+    Dictionary<int, int> countDict = new Dictionary<int, int>();
+    int goodPairs = 0;
+
+    foreach (int num in nums)
+    {
+        if (countDict.ContainsKey(num))
+        {
+            goodPairs += countDict[num];
+            countDict[num]++;
+        }
+        else
+        {
+            countDict[num] = 1;
+        }
+    }
+
+    return goodPairs;
+}
+catch (Exception)
+{
+    throw;
+}
         }
 
         /*
@@ -345,15 +408,30 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static int ThirdMax(int[] nums)
         {
-            try
-            {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+             try
+ {
+     HashSet<int> set = new HashSet<int>();
+
+     foreach (int num in nums)
+     {
+         set.Add(num);
+         if (set.Count > 3)
+         {
+             set.Remove(set.Min());
+         }
+     }
+
+     if (set.Count < 3)
+     {
+         return set.Max();
+     }
+
+     return set.Min();
+ }
+ catch (Exception)
+ {
+     throw;
+ }
         }
 
         /*
@@ -379,14 +457,25 @@ namespace ISM6225_Fall_2023_Assignment_2
         public static IList<string> GeneratePossibleNextMoves(string currentState)
         {
             try
-            {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<string>() { };
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+{
+    List<string> possibleMoves = new List<string>();
+
+    for (int i = 0; i < currentState.Length - 1; i++)
+    {
+        if (currentState[i] == '+' && currentState[i + 1] == '+')
+        {
+            // Create a new string with the "++" flipped to "--"
+            string nextState = currentState.Substring(0, i) + "--" + currentState.Substring(i + 2);
+            possibleMoves.Add(nextState);
+        }
+    }
+
+    return possibleMoves;
+}
+catch (Exception)
+{
+    throw;
+}
         }
 
         /*
@@ -409,8 +498,27 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static string RemoveVowels(string s)
         {
-            // Write your code here and you can modify the return value according to the requirements
-            return "";
+             try
+ {
+     // Create a StringBuilder to build the result string without vowels
+     StringBuilder result = new StringBuilder();
+
+     // Iterate through each character in the input string
+     foreach (char c in s)
+     {
+         // Check if the character is not a vowel (i.e., not 'a', 'e', 'i', 'o', or 'u')
+         if (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u')
+         {
+             result.Append(c);
+         }
+     }
+
+     return result.ToString();
+ }
+ catch (Exception)
+ {
+     throw;
+ }
         }
 
         /* Inbuilt Functions - Don't Change the below functions */
