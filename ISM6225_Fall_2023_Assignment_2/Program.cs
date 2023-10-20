@@ -110,15 +110,41 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static IList<IList<int>> FindMissingRanges(int[] nums, int lower, int upper)
         {
-            try
+           try
+        {
+            IList<IList<int>> result = new List<IList<int>>();
+
+            long start = lower; // Use long to avoid integer overflow
+            long end = lower;   // Initialize both start and end to lower
+
+            for (int i = 0; i < nums.Length; i++)
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                if (nums[i] == end)
+                {
+                    // If the current number is equal to 'end', increment 'end'
+                    end++;
+                }
+                else if (nums[i] > end)
+                {
+                    // If the current number is greater than 'end', there is a missing range
+                    result.Add(new List<int> { (int)start, (int)(end - 1) });
+                    start = nums[i] + 1;
+                    end = start; // Update both start and end
+                }
             }
-            catch (Exception)
+
+            // Add the missing range for numbers after the last element in 'nums'
+            if (end <= upper)
             {
-                throw;
+                result.Add(new List<int> { (int)start, (int)upper });
             }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
 
         }
 
