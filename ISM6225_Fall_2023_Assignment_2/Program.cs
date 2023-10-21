@@ -113,46 +113,46 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static IList<IList<int>> FindMissingRanges(int[] nums, int lower, int upper)
         {
-           try
-{
-    List<IList<int>> result = new List<IList<int>>();
-    long next = lower;
-
-    foreach (int num in nums)
+try
     {
-        if (num > next)
+        List<IList<int>> result = new List<IList<int>>();
+        long next = lower;
+
+        foreach (int num in nums)
         {
-            if (num - next == 1)
+            if (num > next)
             {
-                result.Add(new List<int> { (int)next });
+                if (num - next == 1)
+                {
+                    result.Add(new List<int> { (int)next, (int)next });
+                }
+                else if (num - next > 1)
+                {
+                    result.Add(new List<int> { (int)next, (int)(num - 1) });
+                }
             }
-            else
+
+            next = (long)num + 1;
+        }
+
+        if (next <= upper)
+        {
+            if (upper - next == 0)
             {
-                result.Add(new List<int> { (int)next, (int)(num - 1) });
+                result.Add(new List<int> { (int)next, (int)next });
+            }
+            else if (upper - next > 0)
+            {
+                result.Add(new List<int> { (int)next, (int)upper });
             }
         }
 
-        next = (long)num + 1;
+        return result;
     }
-
-    if (next <= upper)
+    catch (Exception)
     {
-        if (upper - next == 0)
-        {
-            result.Add(new List<int> { (int)next });
-        }
-        else
-        {
-            result.Add(new List<int> { (int)next, (int)upper });
-        }
+        throw;
     }
-
-    return result;
-}
-catch (Exception)
-{
-    throw;
-}
 
         }
 
