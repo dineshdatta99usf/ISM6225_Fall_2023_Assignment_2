@@ -1,5 +1,5 @@
 ﻿/* 
- 
+
 YOU ARE NOT ALLOWED TO MODIFY ANY FUNCTION DEFINATION's PROVIDED.
 WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
 
@@ -10,6 +10,7 @@ using System.Text;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Collections;
 
 namespace ISM6225_Fall_2023_Assignment_2
 {
@@ -113,48 +114,59 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static IList<IList<int>> FindMissingRanges(int[] nums, int lower, int upper)
         {
-try
-    {
-        List<IList<int>> result = new List<IList<int>>();
-        long next = lower;
-
-        foreach (int num in nums)
-        {
-            if (num > next)
+            try
             {
-                if (num - next == 1)
+                // Initilizing list to store missing values
+                List<IList<int>> result = new List<IList<int>>();
+                // Initializing variable to keep track of next number
+                long next = lower;
+
+                foreach (int num in nums)
                 {
-                    result.Add(new List<int> { (int)next, (int)next });
+                    if (num > next)  // Condition to check if num is greater than next number
+                    {
+                        if (num - next == 1)  // if difference is 1, then only one missing number
+                        {
+                            // missing value
+                            result.Add(new List<int> { (int)next, (int)next });
+                        }
+                        // difference is more than 1, then it has range of values
+                        else if (num - next > 1)
+                        {
+                            // Adding missing values range
+                            result.Add(new List<int> { (int)next, (int)(num - 1) });
+                        }
+                    }
+
+                    // pass to next iteration for expected number
+                    next = (long)num + 1;
                 }
-                else if (num - next > 1)
+
+                if (next <= upper)
                 {
-                    result.Add(new List<int> { (int)next, (int)(num - 1) });
+                    if (upper - next == 0)
+                    {
+                        // single missing value
+                        result.Add(new List<int> { (int)next, (int)next });
+                    }
+                    // range of missing values
+                    else if (upper - next > 0)
+                    {
+                        // Add missing values range
+                        result.Add(new List<int> { (int)next, (int)upper });
+                    }
                 }
+
+                // Return the missing values range
+                return result;
             }
-
-            next = (long)num + 1;
-        }
-
-        if (next <= upper)
-        {
-            if (upper - next == 0)
+            catch (Exception)
             {
-                result.Add(new List<int> { (int)next, (int)next });
-            }
-            else if (upper - next > 0)
-            {
-                result.Add(new List<int> { (int)next, (int)upper });
+                // handling any exception that may occur
+                throw;
             }
         }
 
-        return result;
-    }
-    catch (Exception)
-    {
-        throw;
-    }
-
-        }
 
         /*
          
@@ -189,41 +201,51 @@ try
         public static bool IsValid(string s)
         {
             try
-{
-    Stack<Char> st = new Stack<Char>();
-    var CharArray = s.ToCharArray();
+            {
+                // Creating stack to store brackets
+                Stack<Char> st = new Stack<Char>();
 
-    for (int i = 0; i < CharArray.Length; i++)
-    {
-        if (CharArray[i] == '(' || CharArray[i] == '[' || CharArray[i] == '{')
-        {
-            st.Push(CharArray[i]);
-            continue;
-        }
-        else if (st.Count == 0)
-        {
-            return false;
-        }
-        Char top = st.Pop();
-        if (top == '(' && CharArray[i] != ')')
-        {
-            return false;
-        }
-        else if (top == '[' && CharArray[i] != ']')
-        {
-            return false;
-        }
-        else if (top == '{' && CharArray[i] != '}')
-        {
-            return false;
-        }
-    }
-    return st.Count == 0;
-}
-catch (Exception)
-{
-    throw;
-}
+                // Converting string to a character array for easy traversal
+                var CharArray = s.ToCharArray();
+
+                for (int i = 0; i < CharArray.Length; i++)
+                {
+                    if (CharArray[i] == '(' || CharArray[i] == '[' || CharArray[i] == '{')
+                    {
+                        // If array is equal to opening bracket, push it to the stack
+                        st.Push(CharArray[i]);
+                        continue;
+                    }
+                    else if (st.Count == 0)
+                    {
+                        // If there's no matching opening bracket for a closing bracket, the string is invalid.
+                        return false;
+                    }
+                    Char top = st.Pop();
+
+                    if (top == '(' && CharArray[i] != ')')
+                    {
+                        return false;
+                    }
+
+                    else if (top == '[' && CharArray[i] != ']')
+                    {
+                        return false;
+                    }
+                    else if (top == '{' && CharArray[i] != '}')
+                    {
+                        return false;
+                    }
+                }
+
+                // If the stack is empty,we found match for all brackets and string is valid
+                return st.Count == 0;
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions that may occur.
+                throw;
+            }
         }
 
         /*
@@ -251,27 +273,32 @@ catch (Exception)
         public static int MaxProfit(int[] prices)
         {
             try
-{
-    int max = 0;
-    int min = prices[0];
+            {
+                // Initialize the maximum profit and minimum price for first element of array
+                int max = 0;
+                int min = prices[0];
 
-    for (int i = 1; i < prices.Length; i++)
-    {
-        if (prices[i] < min)
-        {
-            min = prices[i];
-        }
-        else if ((prices[i] - min) > max)
-        {
-            max = prices[i] - min;
-        }
-    }
-    return max;
-}
-catch (Exception)
-{
-    throw;
-}
+                for (int i = 1; i < prices.Length; i++)
+                {
+                    if (prices[i] < min)
+                    {
+                        // Update the minimum price if you come across smaller value
+                        min = prices[i];
+                    }
+                    else if ((prices[i] - min) > max)
+                    {
+                        // Calculate the maximum profit and update if a better opportunity is found
+                        max = prices[i] - min;
+                    }
+                }
+                // return max profit value
+                return max;
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions that may occur.
+                throw;
+            }
         }
 
         /*
@@ -300,14 +327,41 @@ catch (Exception)
         */
 
         public static bool IsStrobogrammatic(string s)
+
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return false;
+                Dictionary<char, char> pairs = new Dictionary<char, char>() {
+
+    {'0', '0'},
+
+    {'1', '1'},
+
+    {'6', '9'},
+
+    {'8', '8'},
+
+    {'9', '6'}
+  };
+
+                int left = 0;
+                int right = s.Length - 1;
+                while (left <= right)
+                {
+                    if (!pairs.ContainsKey(s[left]) || pairs[s[left]] != s[right])
+                    {
+                        return false;
+
+                    }
+                    left++;
+                    right--;
+                }
+                return true;
+
             }
             catch (Exception)
             {
+                // handling any exception that may occur
                 throw;
             }
         }
@@ -344,29 +398,37 @@ catch (Exception)
         public static int NumIdenticalPairs(int[] nums)
         {
             try
-{
-    Dictionary<int, int> countDict = new Dictionary<int, int>();
-    int goodPairs = 0;
+            {
+                // Creating dictionary to store result
+                Dictionary<int, int> countDict = new Dictionary<int, int>();
+                // intialize count of good pairs
+                int goodPairs = 0;
 
-    foreach (int num in nums)
-    {
-        if (countDict.ContainsKey(num))
-        {
-            goodPairs += countDict[num];
-            countDict[num]++;
-        }
-        else
-        {
-            countDict[num] = 1;
-        }
-    }
+                foreach (int num in nums)
+                {
+                    if (countDict.ContainsKey(num))
+                    {
+                        // If number exists in dictionary, then increment the good pair
+                        goodPairs += countDict[num];
 
-    return goodPairs;
-}
-catch (Exception)
-{
-    throw;
-}
+                        // Incrementing count for current number
+                        countDict[num]++;
+                    }
+                    else
+                    {
+                        // Initializing count for new number
+                        countDict[num] = 1;
+                    }
+                }
+
+                // Return number of good pairs
+                return goodPairs;
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions that may occur.
+                throw;
+            }
         }
 
         /*
@@ -408,31 +470,39 @@ catch (Exception)
 
         public static int ThirdMax(int[] nums)
         {
-             try
- {
-     HashSet<int> set = new HashSet<int>();
+            try
+            {
+                // Creating hashset to store unique numbers
+                HashSet<int> set = new HashSet<int>();
 
-     foreach (int num in nums)
-     {
-         set.Add(num);
-         if (set.Count > 3)
-         {
-             set.Remove(set.Min());
-         }
-     }
+                foreach (int num in nums)
+                {
+                    // Adding each number to hashset to have uniqueness
+                    set.Add(num);
 
-     if (set.Count < 3)
-     {
-         return set.Max();
-     }
+                    if (set.Count > 3)
+                    {
+                        // If the HashSet contains more than 3 numbers, remove smallest number
+                        set.Remove(set.Min());
+                    }
+                }
 
-     return set.Min();
- }
- catch (Exception)
- {
-     throw;
- }
+                if (set.Count < 3)
+                {
+                    // If hashset has more than 3 numbers, return the maximum number
+                    return set.Max();
+                }
+
+                // return minimum value
+                return set.Min();
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions that may occur.
+                throw;
+            }
         }
+
 
         /*
         
@@ -457,26 +527,32 @@ catch (Exception)
         public static IList<string> GeneratePossibleNextMoves(string currentState)
         {
             try
-{
-    List<string> possibleMoves = new List<string>();
+            {
+                // creating a list to store resultant list
+                List<string> possibleMoves = new List<string>();
 
-    for (int i = 0; i < currentState.Length - 1; i++)
-    {
-        if (currentState[i] == '+' && currentState[i + 1] == '+')
-        {
-            // Create a new string with the "++" flipped to "--"
-            string nextState = currentState.Substring(0, i) + "--" + currentState.Substring(i + 2);
-            possibleMoves.Add(nextState);
-        }
-    }
+                for (int i = 0; i < currentState.Length - 1; i++)
+                {
+                    if (currentState[i] == '+' && currentState[i + 1] == '+')
+                    {
+                        // condition to check if current position and the next position have "++"
+                        // If condition is true, create a string with "++" flipped to "--" at this position
+                        string nextState = currentState.Substring(0, i) + "--" + currentState.Substring(i + 2);
+                        // Add state to possible moves
+                        possibleMoves.Add(nextState);
+                    }
+                }
 
-    return possibleMoves;
-}
-catch (Exception)
-{
-    throw;
-}
+                // Return all possible moves
+                return possibleMoves;
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions that may occur.
+                throw;
+            }
         }
+
 
         /*
 
@@ -498,27 +574,27 @@ catch (Exception)
 
         public static string RemoveVowels(string s)
         {
-             try
- {
-     // Create a StringBuilder to build the result string without vowels
-     StringBuilder result = new StringBuilder();
+            try
+            {
+                // Creating string builder to store the result
+                StringBuilder result = new StringBuilder();
 
-     // Iterate through each character in the input string
-     foreach (char c in s)
-     {
-         // Check if the character is not a vowel (i.e., not 'a', 'e', 'i', 'o', or 'u')
-         if (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u')
-         {
-             result.Append(c);
-         }
-     }
+                // Iteration for each charecter in the string
+                foreach (char c in s)
+                {
+                    // Checking if charecter is not a vowel
+                    if (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u')
+                    {
+                        result.Append(c);
+                    }
+                }
 
-     return result.ToString();
- }
- catch (Exception)
- {
-     throw;
- }
+                return result.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /* Inbuilt Functions - Don't Change the below functions */
