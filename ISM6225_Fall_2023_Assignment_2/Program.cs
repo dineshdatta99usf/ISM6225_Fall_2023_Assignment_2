@@ -327,44 +327,45 @@ namespace ISM6225_Fall_2023_Assignment_2
         */
 
         public static bool IsStrobogrammatic(string s)
-
         {
             try
             {
+                // Create a dictionary to store valid strobogrammatic pairs of characters.
                 Dictionary<char, char> pairs = new Dictionary<char, char>() {
-
-    {'0', '0'},
-
-    {'1', '1'},
-
-    {'6', '9'},
-
-    {'8', '8'},
-
-    {'9', '6'}
-  };
-
+            {'0', '0'},
+            {'1', '1'},
+            {'6', '9'},
+            {'8', '8'},
+            {'9', '6'}
+        };
+                // Initialize left pointer to zero
                 int left = 0;
-                int right = s.Length - 1;
+                // Initialize right pointer of the string
+                int right = s.Length - 1;  
+
                 while (left <= right)
                 {
+                    // Check left and right charecters if they are a valid strobogrammatic pair
                     if (!pairs.ContainsKey(s[left]) || pairs[s[left]] != s[right])
                     {
-                        return false;
-
+                        // return statement that, string is strobogrammatic
+                        return false;  
                     }
+                    // Increament left pointer
                     left++;
-                    right--;
+                    // decrement right pointer
+                    right--;  
                 }
-                return true;
-
+                // If pairs are valid, then it is strobogrammatic
+                return true;  
             }
             catch (Exception)
             {
-                // handling any exception that may occur
+                // Handle any exceptions that may occur.
                 throw;
             }
         }
+
 
         /*
 
